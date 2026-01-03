@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}注册 - 社交小站{% endblock %}
+
+{% block content %}
+<div class="auth-form">
+    <h2>用户注册</h2>
+    <form action="{{ url_for('register') }}" method="POST">
+        <!-- 用户名 -->
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" required placeholder="请设置用户名（唯一）">
+        </div>
+        <!-- 邮箱 -->
+        <div class="form-group">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" name="email" required placeholder="请输入常用邮箱">
+        </div>
+        <!-- 密码 -->
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password" required placeholder="请设置密码">
+        </div>
+        <!-- 注册按钮 -->
+        <button type="submit" class="btn-primary">注册</button>
+        <!-- 登录入口 -->
+        <p class="form-tip">已有账号？<a href="{{ url_for('login') }}">立即登录</a></p>
+    </form>
+</div>
+{% endblock %}

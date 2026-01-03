@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}首页 - 社交小站{% endblock %}
+
+{% block content %}
+<div class="post-form">
+    <h2>发布新动态</h2>
+    <form action="{{ url_for('index') }}" method="POST">
+        <textarea name="content" rows="4" required placeholder="分享你的想法..."></textarea>
+        <button type="submit" class="btn-primary">发布</button>
+    </form>
+</div>
+
+<div class="posts">
+    <h2>最新动态</h2>
+    {% if posts %}
+        {% for post in posts %}
+            <div class="post-card">
+                <div class="post-author">{{ post.author.username }}</div>
+                <div class="post-date">{{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</div>
+                <div class="post-content">{{ post.content }}</div>
+                
+                <!-- 新增：点赞功能 -->
+                <div class="post-actions">
+                    <!-- 替换原点赞按钮代码 -->
+<a href="{{ url_for('like_post', post_id=post.id) }}" class="like-btn {% if post.id in user_likes %}liked{% endif %}">
+    {% if post.id in user_likes %}
+        ❤️ 取消点赞 ({{ post.likes }})
+    {% else %}
+        ♡ 点赞 ({{ post.likes }})
+    {% endif %}
+</a>
+                    
+                    <!-- 新增：删除按钮（仅作者可见） -->
+                    {% if post.author.id == current_user.id %}
+                        <a href="{{ url_for('delete_post', post_id=post.id) }}" class="delete-btn" onclick="return confirm('确定删除这条动态吗？')">删除</a>
+                    {% endif %}
+                </div>
+                
+                <!-- 新增：评论区域 -->
+                <div class="post-comments">
+                    <h4>评论 ({{ post.comments|length }})</h4>
+                    <!-- 发布评论表单 -->
+                    <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST" class="comment-form">
+                        <textarea name="comment_content" rows="2" placeholder="发表评论..."></textarea>
+                        <button type="submit" class="btn-small">发布</button>
+                    </form>
+                    <!-- 显示评论列表 -->
+                    <div class="comments-list">
+                        {% for comment in post.comments %}
+                            <div class="comment-item">
+                                <span class="comment-author">{{ comment.author.username }}</span>
+                                <span class="comment-date">{{ comment.date_posted.strftime('%Y-%m-%d %H:%M') }}</span>
+                                <div class="comment-content">{{ comment.content }}</div>
+                            </div>
+                        {% else %}
+                            <p class="empty-tip">暂无评论，快来抢沙发！</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-tip">暂无动态，快来发布第一条吧！</p>
+    {% endif %}
+</div>
+{% endblock %}

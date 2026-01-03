@@ -1,0 +1,29 @@
+<!-- 继承公共模板，复用头部/页脚 -->
+{% extends "base.html" %}
+
+<!-- 页面标题：区别于其他页面 -->
+{% block title %}登录 - 社交小站{% endblock %}
+
+<!-- 登录页的核心内容 -->
+{% block content %}
+<div class="auth-form">
+    <h2>用户登录</h2>
+    <!-- 登录表单：提交到/login接口 -->
+    <form action="{{ url_for('login') }}" method="POST">
+        <!-- 用户名输入框 -->
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" required placeholder="请输入用户名">
+        </div>
+        <!-- 密码输入框 -->
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password" required placeholder="请输入密码">
+        </div>
+        <!-- 登录按钮：居中显示，突出 -->
+        <button type="submit" class="btn-primary">登录</button>
+        <!-- 注册入口：简洁提示，不抢焦点 -->
+        <p class="form-tip">还没有账号？<a href="{{ url_for('register') }}">立即注册</a></p>
+    </form>
+</div>
+{% endblock %}

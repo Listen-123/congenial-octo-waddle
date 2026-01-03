@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}个人主页 - 社交小站{% endblock %}
+
+{% block content %}
+<div class="profile-header">
+    <h2>{{ current_user.username }} 的动态</h2>
+    <p class="profile-tip">共发布了 {{ posts|length }} 条动态</p>
+</div>
+
+<div class="posts">
+    {% if posts %}
+        {% for post in posts %}
+            <div class="post-card">
+                <div class="post-date">{{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</div>
+                <div class="post-content">{{ post.content }}</div>
+                
+                <div class="post-actions">
+                   <!-- 替换原点赞按钮代码 -->
+<a href="{{ url_for('like_post', post_id=post.id) }}" class="like-btn {% if post.id in user_likes %}liked{% endif %}">
+    {% if post.id in user_likes %}
+        ❤️ 取消点赞 ({{ post.likes }})
+    {% else %}
+        ♡ 点赞 ({{ post.likes }})
+    {% endif %}
+</a>
+                    <a href="{{ url_for('delete_post', post_id=post.id) }}" class="delete-btn" onclick="return confirm('确定删除这条动态吗？')">删除</a>
+                </div>
+                
+                <!-- 评论区域 -->
+                <div class="post-comments">
+                    <h4>评论 ({{ post.comments|length }})</h4>
+                    <form action="{{ url_for('add_comment', post_id=post.id) }}" method="POST" class="comment-form">
+                        <textarea name="comment_content" rows="2" placeholder="发表评论..."></textarea>
+                        <button type="submit" class="btn-small">发布</button>
+                    </form>
+                    <div class="comments-list">
+                        {% for comment in post.comments %}
+                            <div class="comment-item">
+                                <span class="comment-author">{{ comment.author.username }}</span>
+                                <span class="comment-date">{{ comment.date_posted.strftime('%Y-%m-%d %H:%M') }}</span>
+                                <div class="comment-content">{{ comment.content }}</div>
+                            </div>
+                        {% else %}
+                            <p class="empty-tip">暂无评论</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-tip">你还没有发布任何动态，快去首页发布吧！</p>
+    {% endif %}
+</div>
+{% endblock %}
